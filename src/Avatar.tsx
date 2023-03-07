@@ -3,7 +3,7 @@ import { Suspense, useEffect } from 'react'
 import { GroupProps, useLoader } from '@react-three/fiber'
 import "./index.css";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { Quaternion, Euler } from 'three';
+import { Euler } from 'three';
 
 type SimpleEuler = { x: number, y: number, z: number };
 
