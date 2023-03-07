@@ -1,6 +1,6 @@
 {
   "name": "react-three-avatar",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
   "license": "MIT",
   "main": "dist/react-three-avatar.umd.cjs",
@@ -9,7 +9,7 @@
     "dev": "vite",
     "build": "tsc && vite build --config vite.lib.config.ts",
     "preview": "vite preview",
-    "types": "tsc --declaration --emitDeclarationOnly --outDir dist"
+    "types": "tsc  --declaration --emitDeclarationOnly --p tsconfig.types.json --outDir dist"
   },
   "dependencies": {
     "@react-three/drei": "^9.57.0",

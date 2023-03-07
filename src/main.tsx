@@ -8,9 +8,10 @@ import { useControls } from 'leva';
 const ROTATION_STEP = Math.PI / 180;
 
 const App = () => {
-  const { mouthOpen, mouthSmile, ...bodyPose } = useControls({
+  const { mouthOpen, mouthSmile, center, ...bodyPose } = useControls({
     mouthOpen: { value: 0, min: 0, max: 1 },
     mouthSmile: { value: 0, min: 0, max: 1 },
+    center: { value: { x: 0, y: 0, z: 0 }, step: .1 },
     Hips: { value: { x: 0, y: 0, z: 0 }, step: ROTATION_STEP },
     Spine: { value: { x: 0, y: 0, z: 0 }, step: ROTATION_STEP },
     Spine1: { value: { x: 0, y: 0, z: 0 }, step: ROTATION_STEP },
@@ -22,7 +23,7 @@ const App = () => {
     <ambientLight />
     <OrbitControls />
     <Avatar url="https://models.readyplayer.me/640765d93e6d860c1d738326.glb" position={[0, -1, 0]} mouthOpen={mouthOpen} mouthSmile={mouthSmile}
-
+      center={center}
       bodyPose={bodyPose} />
   </Canvas>;
 }

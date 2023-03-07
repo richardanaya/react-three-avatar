@@ -3,9 +3,9 @@ import { Suspense, useEffect } from 'react'
 import { GroupProps, useLoader } from '@react-three/fiber'
 import "./index.css";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
-import { Euler } from 'three';
+import { Euler, Vector3 } from 'three';
 
-type SimpleEuler = { x: number, y: number, z: number };
+export type SimpleEuler = { x: number, y: number, z: number };
 
 export interface BodyPose {
     Hips?: SimpleEuler,
@@ -77,8 +77,8 @@ export interface BodyPose {
     RightToe_End?: SimpleEuler,
 }
 
-export function Avatar(props: { url: string, mouthOpen: number, mouthSmile: number, bodyPose?: BodyPose } & GroupProps) {
-    const { mouthOpen, mouthSmile, bodyPose } = props;
+export function Avatar(props: { url: string, mouthOpen: number, mouthSmile: number, bodyPose?: BodyPose, center: { x: number, y: number, z: number } } & GroupProps) {
+    const { mouthOpen, mouthSmile, bodyPose, center } = props;
     // load a glb
     const gltf = useLoader(GLTFLoader, props.url)
 
@@ -119,7 +119,9 @@ export function Avatar(props: { url: string, mouthOpen: number, mouthSmile: numb
         }));
     }, [gltf, mouthOpen, mouthSmile]);
 
-    return <Suspense fallback={null}>
-        <primitive object={gltf.scene} {...props} />
-    </Suspense>
+    return <group {...props}>
+        <Suspense fallback={null}>
+            <primitive object={gltf.scene} position={center ? [center.x, center.y, center.z] : undefined} />
+        </Suspense>
+    </group>
 }
