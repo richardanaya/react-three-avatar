@@ -5,9 +5,13 @@ import "./index.css";
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { Euler, Vector3 } from 'three';
 
+export type SimplePosition = { x: number, y: number, z: number };
 export type SimpleEuler = { x: number, y: number, z: number };
 
-export interface BodyPose {
+export interface AvatarPose {
+    MouthOpen?: number,
+    MouthSmile?: number,
+    Center?: SimplePosition,
     Hips?: SimpleEuler,
     Spine?: SimpleEuler,
     Spine1?: SimpleEuler,
@@ -77,18 +81,20 @@ export interface BodyPose {
     RightToe_End?: SimpleEuler,
 }
 
-export function Avatar(props: { url: string, mouthOpen: number, mouthSmile: number, bodyPose?: BodyPose, center: { x: number, y: number, z: number } } & GroupProps) {
-    const { mouthOpen, mouthSmile, bodyPose, center } = props;
+export type AvatarProps = { url: string, pose?: AvatarPose } & GroupProps
+
+export function Avatar(props: AvatarProps) {
+    const { pose, url } = props;
     // load a glb
     const gltf = useLoader(GLTFLoader, props.url)
 
     useEffect(() => {
-        if (bodyPose) {
+        if (pose) {
             // list out all bones we can animate
             gltf.scenes.forEach(_ => _.traverse((o: any) => {
                 if (o.isBone) {
                     const name = o.name as string;
-                    const value: SimpleEuler | undefined = (bodyPose as any)[name];
+                    const value: SimpleEuler | undefined = (pose as any)[name];
                     if (value) {
                         (o.rotation as Euler).set(value.x, value.y, value.z);
                     }
@@ -96,7 +102,7 @@ export function Avatar(props: { url: string, mouthOpen: number, mouthSmile: numb
             }
             ));
         }
-    }, [bodyPose]);
+    }, [pose]);
 
 
     // on change of controls update the morph targets
@@ -106,22 +112,22 @@ export function Avatar(props: { url: string, mouthOpen: number, mouthSmile: numb
             if (o.morphTargetInfluences && o.userData.targetNames) {
                 // find the mouth open target
                 const mouthOpenIndex = o.userData.targetNames.indexOf("mouthOpen");
-                if (mouthOpenIndex >= 0) {
-                    o.morphTargetInfluences[mouthOpenIndex] = mouthOpen;
+                if (mouthOpenIndex >= 0 && pose?.MouthOpen !== undefined) {
+                    o.morphTargetInfluences[mouthOpenIndex] = pose.MouthOpen;
                 }
                 // find the mouth smile target
                 const mouthSmileIndex = o.userData.targetNames.indexOf("mouthSmile");
-                if (mouthSmileIndex >= 0) {
-                    o.morphTargetInfluences[mouthSmileIndex] = mouthSmile;
+                if (mouthSmileIndex >= 0 && pose?.MouthOpen !== undefined) {
+                    o.morphTargetInfluences[mouthSmileIndex] = pose.MouthOpen;
                 }
             }
 
         }));
-    }, [gltf, mouthOpen, mouthSmile]);
+    }, [gltf, pose]);
 
     return <group {...props}>
         <Suspense fallback={null}>
-            <primitive object={gltf.scene} position={center ? [center.x, center.y, center.z] : undefined} />
+            <primitive object={gltf.scene} position={pose?.Center ? [pose.Center.x, pose.Center.y, pose.Center.z] : undefined} />
         </Suspense>
     </group>
 }
