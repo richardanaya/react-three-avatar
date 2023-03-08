@@ -118,7 +118,7 @@ export function Avatar(props: AvatarProps) {
           // find the mouth smile target
           const mouthSmileIndex = o.userData.targetNames.indexOf("mouthSmile");
           if (mouthSmileIndex >= 0 && pose?.MouthOpen !== undefined) {
-            o.morphTargetInfluences[mouthSmileIndex] = pose.MouthOpen;
+            o.morphTargetInfluences[mouthSmileIndex] = pose.MouthSmile;
           }
         }
       })
